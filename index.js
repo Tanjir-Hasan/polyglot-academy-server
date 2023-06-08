@@ -35,7 +35,30 @@ async function run() {
         // all collections
         const usersCollection = client.db("campDb").collection("users");
 
+        // search users collection
 
+        app.get('/users', async (req, res) => {
+            const result = await usersCollection.find().toArray();
+            res.send(result);
+        })
+
+        // user collection
+        app.post('/users', async (req, res) => {
+            const users = req.body;
+            console.log(users);
+
+            // for google only
+            const query = { email: users.email };
+            const existingUser = await usersCollection.findOne(query);
+            console.log(existingUser);
+            if (existingUser) {
+                return res.send({ message: "User already exists" })
+            };
+            // for google only
+
+            const result = await usersCollection.insertOne(users);
+            res.send(result);
+        });
 
 
 
