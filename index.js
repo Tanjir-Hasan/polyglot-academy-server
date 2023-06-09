@@ -63,11 +63,11 @@ const verifyJWT = (req, res, next) => {
 //     const email = req.decoded.email;
 //     const query = { email: email };
 //     const user = await usersCollection.findOne(query);
-  
+
 //     if (!user || user.role !== 'admin') {
 //       return res.status(403).send({ error: true, message: 'Forbidden access' });
 //     }
-  
+
 //     next();
 //   };
 
@@ -86,10 +86,11 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        
+
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
+        // TODO: need to make instructor api and show it to the ui
 
         // all collections
 
@@ -138,14 +139,21 @@ async function run() {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
-        
+
         // get all data from db
 
         app.get('/allData', async (req, res) => {
             const result = await dataCollection.find().toArray();
             res.send(result);
         });
-      
+
+        // add classes
+        app.post('/allData', verifyJWT, verifyInstructor, async (req, res) => {
+            const newItem = req.body;
+            const result = await dataCollection.insertOne(newItem);
+            res.send(result);
+        })
+        // add classes
 
         // user collection
 
@@ -206,33 +214,33 @@ async function run() {
 
         app.get('/users/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
-      
+
             if (req.decoded.email !== email) {
-              res.send({ admin: false });
-              return;
+                res.send({ admin: false });
+                return;
             }
-      
+
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             const result = { admin: user?.role === 'admin' };
             res.send(result);
-          });
+        });
 
         // user is instructor or not
 
         app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
-      
+
             if (req.decoded.email !== email) {
-              res.send({ instructor: false });
-              return;
+                res.send({ instructor: false });
+                return;
             }
-      
+
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             const result = { instructor: user?.role === 'instructor' };
             res.send(result);
-          });
+        });
 
 
         // Send a ping to confirm a successful connection

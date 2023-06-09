@@ -3,7 +3,7 @@
         "_id": "648319c2bc3534cd7f63f9c3",
         "picture": "https://i.ibb.co/vdGZJkz/lan-spa.webp",
         "language": "Spanish",
-        "availableSeats": "45",
+        "availableSeats": 0,
         "instructor_name": "Yanina Carrera",
         "instructor_picture": "https://i.ibb.co/hVYmvxR/spanish.jpg"
     },
@@ -11,7 +11,7 @@
         "_id": "648319c24b9e34496b068ed7",
         "picture": "https://i.ibb.co/Z68yB1z/lan-ara.jpg",
         "language": "Arabic",
-        "availableSeats": "62",
+        "availableSeats": 62,
         "instructor_name": "Aaliyah Hasnaat",
         "instructor_picture": "https://i.ibb.co/5nQHvrt/arabic.jpg"
     },
@@ -19,7 +19,7 @@
         "_id": "648319c27f7ef4cf8aea0c22",
         "picture": "https://i.ibb.co/D4kfZR0/lan-eng.jpg",
         "language": "English",
-        "availableSeats": "22",
+        "availableSeats": 22,
         "instructor_name": "Andy Rossi",
         "instructor_picture": "https://i.ibb.co/TtvmHXh/eng.jpg"
     },
@@ -27,7 +27,7 @@
         "_id": "648319c2ada2149de357f797",
         "picture": "https://i.ibb.co/bFH9bZ6/lan-fre.jpg",
         "language": "French",
-        "availableSeats": "21",
+        "availableSeats": 21,
         "instructor_name": "Clara Rousseau",
         "instructor_picture": "https://i.ibb.co/3MSdzhC/5fabde6f-f91e-4c4b-acdb-362f4cf17999.jpg"
     },
@@ -35,7 +35,7 @@
         "_id": "648319c2ea2f7d79409dc184",
         "picture": "https://i.ibb.co/q10GYWd/lan-rus.jpg",
         "language": "Russian",
-        "availableSeats": "12",
+        "availableSeats": 12,
         "instructor_name": "Ludovic Migneault",
         "instructor_picture": "https://i.ibb.co/CMqkyCW/Russian.jpg"
     },
@@ -43,7 +43,7 @@
         "_id": "648319c2d3b93a144ca3f82a",
         "picture": "https://i.ibb.co/kxLjvSP/lan-Portuguese.jpg",
         "language": "Portuguese",
-        "availableSeats": "28",
+        "availableSeats": 28,
         "instructor_name": "Diogo Oliveira",
         "instructor_picture": "https://i.ibb.co/Dtyn7nM/Portuguese.jpg"
     },
@@ -51,7 +51,7 @@
         "_id": "648319c211cff121ab7b03dc",
         "picture": "https://i.ibb.co/drGkfY2/lan-Chinese.jpg",
         "language": "Chinese",
-        "availableSeats": "36",
+        "availableSeats": 36,
         "instructor_name": "Huang Ming",
         "instructor_picture": "https://i.ibb.co/5MBvZfK/Chinese.jpg"
     },
@@ -59,7 +59,7 @@
         "_id": "648319c2535913dca442e86d",
         "picture": "https://i.ibb.co/F7HCxmM/lan-Japanese.jpg",
         "language": "Japanese",
-        "availableSeats": "9",
+        "availableSeats": 9,
         "instructor_name": "Michael Dam",
         "instructor_picture": "https://i.ibb.co/FXpq6Xy/Japanese.jpg"
     },
@@ -67,7 +67,7 @@
         "_id": "648319c232fad792eea605ae",
         "picture": "https://i.ibb.co/zxwXG7j/lan-Korean.jpg",
         "language": "Korean",
-        "availableSeats": "16",
+        "availableSeats": 16,
         "instructor_name": "Seung-hyun Kim",
         "instructor_picture": "https://i.ibb.co/m9CgYdt/Korean.jpg"
     }
