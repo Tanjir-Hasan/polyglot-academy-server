@@ -94,6 +94,7 @@ async function run() {
         // all collections
 
         const usersCollection = client.db("campDb").collection("users");
+        const dataCollection = client.db("campDb").collection("allData");
 
         // JWT
 
@@ -135,6 +136,13 @@ async function run() {
 
         app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
             const result = await usersCollection.find().toArray();
+            res.send(result);
+        });
+        
+        // get all data from db
+
+        app.get('/allData', async (req, res) => {
+            const result = await dataCollection.find().toArray();
             res.send(result);
         });
       
