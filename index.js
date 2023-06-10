@@ -95,7 +95,9 @@ async function run() {
         // all collections
 
         const usersCollection = client.db("campDb").collection("users");
-        const dataCollection = client.db("campDb").collection("allData");
+        const classCollection = client.db("campDb").collection("classes");
+        const instructorCollection = client.db("campDb").collection("instructors");
+        const pendingCollection = client.db("campDb").collection("pending");
 
         // JWT
 
@@ -140,20 +142,177 @@ async function run() {
             res.send(result);
         });
 
-        // get all data from db
+        // get all classes data from db
 
-        app.get('/allData', async (req, res) => {
-            const result = await dataCollection.find().toArray();
+        app.get('/all-classes', async (req, res) => {
+            const result = await classCollection.find().toArray();
+            res.send(result);
+        });
+
+        // get all instructor data from db
+
+        app.get('/instructors', async (req, res) => {
+            const result = await instructorCollection.find().toArray();
+            res.send(result);
+        });
+
+
+        // instructor and pending classes
+
+        // app.get('/pending', verifyJWT, async (req, res) => {
+        //     const email = req.query.email;
+
+        //     if (!email) {
+        //         res.send([]);
+        //     }
+
+        //     const decodedEmail = req.decoded.email;
+
+        //     if (email !== decodedEmail) {
+        //         return req.status(403).send({ error: true, message: 'forbidden access' })
+        //     }
+
+        //     const query = { email: email };
+        //     const result = await classCollection.find(query).toArray();
+        //     res.send(result);
+        // });
+
+        // app.post('/pending', async (req, res) => {
+        //     const item = req.body;
+        //     console.log(item);
+        //     const result = await pendingCollection.insertOne(item);
+        //     res.send(result);
+        // });
+
+
+
+        // Update class status by ID
+        // app.patch('/classes/status/:id', verifyJWT, verifyAdmin, async (req, res) => {
+        //     const id = req.params.id;
+        //     const filter = { _id: new ObjectId(id) };
+
+        //     const { status } = req.body;
+        //     const updateDoc = {
+        //         $set: { status }
+        //     };
+
+        //     const result = await classCollection.updateOne(filter, updateDoc);
+        //     res.send(result);
+        // });
+
+
+
+        //  // Get all classes with pending status
+        //  app.get('/classes/pending', verifyJWT, verifyAdmin, async (req, res) => {
+        //     const result = await classCollection.find({ status: 'pending' }).toArray();
+        //     res.send(result);
+        // });
+
+
+
+
+
+
+
+        // get all classes data from db (only approved classes)
+        app.get('/classes', async (req, res) => {
+            const result = await classCollection.find().toArray();
+            const data = result.filter(item => item?.status == 'approved')
+            res.send(data);
+        });
+
+
+        // add classes
+
+        app.post('/classes', verifyJWT, verifyInstructor, async (req, res) => {
+            const newClass = { ...req.body, status: 'pending' };
+            const result = await classCollection.insertOne(newClass);
             res.send(result);
         });
 
         // add classes
-        app.post('/allData', verifyJWT, verifyInstructor, async (req, res) => {
-            const newItem = req.body;
-            const result = await dataCollection.insertOne(newItem);
+
+
+        // Approve class
+        app.patch('/classes/approve/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+
+            const updateDoc = {
+                $set: {
+                    status: 'approved'
+                }
+            };
+
+            const result = await classCollection.updateOne(filter, updateDoc);
             res.send(result);
-        })
-        // add classes
+        });
+
+        // Deny class with feedback
+        app.patch('/classes/deny/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+
+            const { feedback } = req.body;
+            const updateDoc = {
+                $set: {
+                    status: 'denied',
+                    feedback: feedback
+                }
+            };
+
+            const result = await classCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
+
+
+
+        // send feedback
+
+        app.post('/classes/feedback/:id', async (req, res) => {
+            const { id } = req.params;
+            const { feedback } = req.body;
+
+            const filter = { _id: new ObjectId(id) };
+            const update = { $set: { feedback } };
+
+            const result = await classCollection.updateOne(filter, update);
+
+            res.send(result);
+        });
+
+
+        app.get('/classes/feedback/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const filter = { email: email };
+            const classItem = await classCollection.findOne(filter);
+
+            if (!classItem) {
+                return res.status(404).send('Class not found');
+            }
+
+            const feedback = classItem.feedback || '';
+
+            res.send(feedback);
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // user collection
 
