@@ -163,9 +163,6 @@ async function run() {
         });
 
 
-
-
-
         // get all classes data from db
 
         app.get('/all-classes', async (req, res) => {
@@ -266,8 +263,6 @@ async function run() {
         });
 
 
-
-
         // cart collection
 
         app.get('/carts', verifyJWT, async (req, res) => {
@@ -303,10 +298,6 @@ async function run() {
         });
 
 
-
-
-
-
         // specific data for the instructor
 
         app.get('/instructors/:email', verifyJWT, async (req, res) => {
@@ -321,11 +312,6 @@ async function run() {
 
             res.send(instructor);
         });
-
-
-
-
-
 
 
         // feedback
@@ -417,32 +403,32 @@ async function run() {
         // });
 
 
-        // app.post('/payments', verifyJWT, async (req, res) => {
-        //     const payment = req.body;
-        //     const insertResult = await paymentCollection.insertOne(payment);
+        app.post('/payments', verifyJWT, async (req, res) => {
+            const payment = req.body;
+            const insertResult = await paymentCollection.insertOne(payment);
 
-        //     const cartItems = payment.cartItems; 
-        //     for (const cartItemId of cartItems) {
-        //         const cartItem = await cartCollection.findOne({ _id: new ObjectId(cartItemId) });
-        //         if (cartItem && cartItem.classId) {
-        //             const classId = cartItem.classId;
-        //             const classDetails = await classCollection.findOne({ _id: new ObjectId(classId) });
-        //             if (classDetails && classDetails.availableSeats > 0) {
-        //                 const updatedSeats = classDetails.availableSeats - 1;
-        //                 await classCollection.updateOne(
-        //                     { _id: ObjectId(classId) },
-        //                     { $set: { availableSeats: updatedSeats } }
-        //                 );
-        //             }
-        //         }
-        //     }
+            const cartItems = payment.cartItems; 
+            for (const cartItemId of cartItems) {
+                const cartItem = await cartCollection.findOne({ _id: new ObjectId(cartItemId) });
+                if (cartItem && cartItem.classId) {
+                    const classId = cartItem.classId;
+                    const classDetails = await classCollection.findOne({ _id: new ObjectId(classId) });
+                    if (classDetails && classDetails.availableSeats > 0) {
+                        const updatedSeats = classDetails.availableSeats - 1;
+                        await classCollection.updateOne(
+                            { _id: ObjectId(classId) },
+                            { $set: { availableSeats: updatedSeats } }
+                        );
+                    }
+                }
+            }
 
-        //     // Delete the cart items
-        //     const query = { _id: { $in: cartItems.map(id => new ObjectId(id)) } };
-        //     const deleteResult = await cartCollection.deleteMany(query);
+            // Delete the cart items
+            const query = { _id: { $in: cartItems.map(id => new ObjectId(id)) } };
+            const deleteResult = await cartCollection.deleteMany(query);
 
-        //     res.send({ insertResult, deleteResult });
-        // });
+            res.send({ insertResult, deleteResult });
+        });
 
 
 
@@ -463,22 +449,6 @@ async function run() {
                 revenue
             })
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // Send a ping to confirm a successful connection
