@@ -135,6 +135,19 @@ async function run() {
 
         // make instructor from user
 
+        app.get('/users/instructors', async (req, res) => {
+            const filter = { role: 'instructor' };
+
+            try {
+                const instructors = await usersCollection.find(filter).toArray();
+                res.send(instructors);
+            } catch (error) {
+                console.error(error);
+                res.status(500).send('An error occurred while retrieving the instructors.');
+            }
+        });
+
+
         app.patch('/users/instructor/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
@@ -370,14 +383,14 @@ async function run() {
 
         app.get('/payments', verifyJWT, async (req, res) => {
             try {
-              const payments = await paymentCollection.find().sort({ date: -1 }).toArray();
-              res.send(payments);
+                const payments = await paymentCollection.find().sort({ date: -1 }).toArray();
+                res.send(payments);
             } catch (error) {
-              console.error('Error fetching payments:', error);
-              res.status(500).send('Internal Server Error');
+                console.error('Error fetching payments:', error);
+                res.status(500).send('Internal Server Error');
             }
-          });
-          
+        });
+
 
         // app.post('/payments', verifyJWT, async (req, res) => {
         //     const payment = req.body;
@@ -394,7 +407,7 @@ async function run() {
         app.post('/payments', verifyJWT, async (req, res) => {
             const payment = req.body;
             const insertResult = await paymentCollection.insertOne(payment);
-        
+
             // Reduce the available seats for the corresponding classes
             const cartItems = payment.cartItems; // Assuming cartItems is an array of cart item IDs
             for (const cartItemId of cartItems) {
@@ -411,16 +424,16 @@ async function run() {
                     }
                 }
             }
-        
+
             // Delete the cart items
             const query = { _id: { $in: cartItems.map(id => new ObjectId(id)) } };
             const deleteResult = await cartCollection.deleteMany(query);
-        
+
             res.send({ insertResult, deleteResult });
         });
-        
-        
-        
+
+
+
 
         // admin dashboard
         app.get('/admin-stats', verifyJWT, verifyAdmin, async (req, res) => {
