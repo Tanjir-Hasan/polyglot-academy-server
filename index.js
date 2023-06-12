@@ -381,15 +381,28 @@ async function run() {
 
         // payment related apis
 
-        app.get('/payments', verifyJWT, async (req, res) => {
+        // app.get('/payments', verifyJWT, async (req, res) => {
+        //     try {
+        //         const payments = await paymentCollection.find().sort({ date: -1 }).toArray();
+        //         res.send(payments);
+        //     } catch (error) {
+        //         console.error('Error fetching payments:', error);
+        //         res.status(500).send('Internal Server Error');
+        //     }
+        // });
+
+
+        app.get('/payments/:email', verifyJWT, async (req, res) => {
             try {
-                const payments = await paymentCollection.find().sort({ date: -1 }).toArray();
+                const email = req.params.email; // Get the email parameter from the request URL
+                const payments = await paymentCollection.find({ email }).sort({ date: -1 }).toArray();
                 res.send(payments);
             } catch (error) {
                 console.error('Error fetching payments:', error);
                 res.status(500).send('Internal Server Error');
             }
         });
+
 
 
         // app.post('/payments', verifyJWT, async (req, res) => {
@@ -404,33 +417,32 @@ async function run() {
         // });
 
 
-        app.post('/payments', verifyJWT, async (req, res) => {
-            const payment = req.body;
-            const insertResult = await paymentCollection.insertOne(payment);
+        // app.post('/payments', verifyJWT, async (req, res) => {
+        //     const payment = req.body;
+        //     const insertResult = await paymentCollection.insertOne(payment);
 
-            // Reduce the available seats for the corresponding classes
-            const cartItems = payment.cartItems; // Assuming cartItems is an array of cart item IDs
-            for (const cartItemId of cartItems) {
-                const cartItem = await cartCollection.findOne({ _id: new ObjectId(cartItemId) });
-                if (cartItem && cartItem.classId) {
-                    const classId = cartItem.classId;
-                    const classDetails = await classCollection.findOne({ _id: new ObjectId(classId) });
-                    if (classDetails && classDetails.availableSeats > 0) {
-                        const updatedSeats = classDetails.availableSeats - 1;
-                        await classCollection.updateOne(
-                            { _id: ObjectId(classId) },
-                            { $set: { availableSeats: updatedSeats } }
-                        );
-                    }
-                }
-            }
+        //     const cartItems = payment.cartItems; 
+        //     for (const cartItemId of cartItems) {
+        //         const cartItem = await cartCollection.findOne({ _id: new ObjectId(cartItemId) });
+        //         if (cartItem && cartItem.classId) {
+        //             const classId = cartItem.classId;
+        //             const classDetails = await classCollection.findOne({ _id: new ObjectId(classId) });
+        //             if (classDetails && classDetails.availableSeats > 0) {
+        //                 const updatedSeats = classDetails.availableSeats - 1;
+        //                 await classCollection.updateOne(
+        //                     { _id: ObjectId(classId) },
+        //                     { $set: { availableSeats: updatedSeats } }
+        //                 );
+        //             }
+        //         }
+        //     }
 
-            // Delete the cart items
-            const query = { _id: { $in: cartItems.map(id => new ObjectId(id)) } };
-            const deleteResult = await cartCollection.deleteMany(query);
+        //     // Delete the cart items
+        //     const query = { _id: { $in: cartItems.map(id => new ObjectId(id)) } };
+        //     const deleteResult = await cartCollection.deleteMany(query);
 
-            res.send({ insertResult, deleteResult });
-        });
+        //     res.send({ insertResult, deleteResult });
+        // });
 
 
 
